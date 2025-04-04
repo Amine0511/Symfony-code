@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Bibliothèque
+{% endblock %}
+
+{% block body_style %}background-color: #f5f1e8;
+{% endblock %}
+{% block body_class %}homepage
+{% endblock %}
+
+{% block body %}
+	<!-- Section principale -->
+	<div class="container text-center py-5">
+		<h1 class="display-4 fw-bold text-dark">Trouvez votre prochain livre</h1>
+		<p class="lead text-secondary">Explorez une vaste collection de livres et trouvez votre prochaine lecture.</p>
+
+		<!-- Barre de recherche -->
+		<form class="search-form mx-auto mt-4" action="#" method="get">
+			<div class="input-group input-group-lg w-50 mx-auto">
+				<input type="text" class="form-control" placeholder="Rechercher un livre..." name="q">
+				<button class="btn btn-dark" type="submit">
+					<i class="fas fa-search"></i>
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<!-- Section Livres Populaires -->
+	<div class="container mt-5">
+		<div class="livres-populaires p-4 rounded">
+			<div class="d-flex justify-content-between align-items-center">
+				<h2 class="fw-bold text-dark">
+					<i class="fas fa-star text-warning"></i>
+					Livres Populaires
+				</h2>
+				<a href="#" class="btn btn-outline-dark btn-sm">
+					<i class="fas fa-book"></i>
+					Voir tous les livres
+				</a>
+			</div>
+			<div class="mt-4">
+				{% if livres is empty %}
+					<div class="alert alert-info text-center">
+						<i class="fas fa-info-circle"></i>
+						Aucun livre disponible pour le moment.
+					</div>
+				{% else %}
+					<div class="row">
+						{% for livre in livres %}
+							<div class="col-md-3">
+								<div class="card shadow-sm">
+									{% if livre.image %}
+										<img src="{{ asset(livre.image) }}" class="card-img-top" alt="{{ livre.titre }}">
+									{% else %}
+										<div class="card-img-top bg-light text-center py-5">
+											<i class="fas fa-book fa-3x text-muted"></i>
+										</div>
+									{% endif %}
+									<div class="card-body text-center">
+										<h5 class="card-title">{{ livre.titre }}</h5>
+										<p class="text-muted">{{ livre.auteur.nom }}</p>
+										<a href="#" class="btn btn-outline-primary btn-sm">Voir Plus</a>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<!-- Section Statistiques -->
+	<div class="container mt-5">
+		<div class="row text-center">
+			<div class="col-md-4">
+				<div class="stat-box">
+					<i class="fas fa-book fa-3x text-primary"></i>
+					<h3>{{ total_livres }}</h3>
+					<p>Livres disponibles</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="stat-box">
+					<i class="fas fa-users fa-3x text-success"></i>
+					<h3>{{ total_auteurs }}</h3>
+					<p>Auteurs</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="stat-box">
+					<i class="fas fa-bookmark fa-3x text-warning"></i>
+					<h3>{{ total_genres }}</h3>
+					<p>Genres littéraires</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Styles spécifiques -->
+	<style>
+		.homepage {
+			background-color: #f5f1e8;
+		}
+		.livres-populaires {
+			background: #fff;
+			border-radius: 10px;
+			padding: 20px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+		.stat-box {
+			background: #f8f9fa;
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+		.btn-outline-secondary {
+			border-color: #ff8c00;
+			color: #ff8c00;
+		}
+		.btn-outline-secondary:hover {
+			background-color: #ff8c00;
+			color: white;
+		}
+	</style>
+{% endblock %}
+

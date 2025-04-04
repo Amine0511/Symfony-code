@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - Bibliothèque{% endblock %}
+
+{% block body_style %}background-color: #f5f1e8;{% endblock %}
+{% block body_class %}homepage{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-5">
+                        <h1 class="text-center mb-4">Inscription</h1>
+
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nom</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="name" name="name" required autofocus>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Téléphone</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-phone"></i>
+                                    </span>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-dark" type="submit">
+                                    <i class="fas fa-user-plus me-2"></i>S'inscrire
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

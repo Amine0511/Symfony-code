@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mot de passe oublié - Bibliothèque{% endblock %}
+
+{% block body_style %}background-color: #f5f1e8;{% endblock %}
+{% block body_class %}homepage{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h1 class="h3 text-center mb-4">Mot de passe oublié</h1>
+                    
+                    {% for flash_error in app.flashes('reset_password_error') %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ flash_error }}
+                        </div>
+                    {% endfor %}
+
+                    <p class="text-muted mb-4">
+                        Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+                    </p>
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input type="email" class="form-control" id="email" name="email" required autofocus>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-dark" type="submit">
+                                <i class="fas fa-paper-plane me-2"></i>Envoyer le lien
+                            </button>
+                            <a href="{{ path('app_login') }}" class="btn btn-link">
+                                <i class="fas fa-arrow-left me-2"></i>Retour à la connexion
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
