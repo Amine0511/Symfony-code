@@ -17,8 +17,8 @@ class HomeController extends AbstractController
         AuteurRepository $auteurRepository,
         GenreRepository $genreRepository
     ): Response {
-        // Récupérer les 8 derniers livres ajoutés
-        $livresPopulaires = $livreRepository->findBy([], ['id' => 'DESC'], 8);
+        // Récupérer les 4 livres les plus populaires
+        $livresPopulaires = $livreRepository->findMostPopular(4);
 
         return $this->render('home/index.html.twig', [
             'total_livres' => $livreRepository->count([]),

@@ -24,6 +24,9 @@ class Livre
     #[ORM\Column]
     private ?bool $disponible = null;
 
+    #[ORM\Column(type: "text", nullable: true)]
+    private ?string $description = null;
+
     #[ORM\ManyToOne(inversedBy: 'livres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Auteur $auteur = null;
@@ -38,9 +41,13 @@ class Livre
     #[ORM\OneToMany(targetEntity: Emprunt::class, mappedBy: 'livre')]
     private Collection $emprunts;
 
+    #[ORM\OneToMany(mappedBy: 'livre', targetEntity: Critique::class, orphanRemoval: true)]
+    private Collection $critiques;
+
     public function __construct()
     {
         $this->emprunts = new ArrayCollection();
+        $this->critiques = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -81,6 +88,17 @@ class Livre
     {
         $this->disponible = $disponible;
 
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
         return $this;
     }
 
@@ -132,6 +150,36 @@ class Livre
             // set the owning side to null (unless already changed)
             if ($emprunt->getLivre() === $this) {
                 $emprunt->setLivre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Critique>
+     */
+    public function getCritiques(): Collection
+    {
+        return $this->critiques;
+    }
+
+    public function addCritique(Critique $critique): static
+    {
+        if (!$this->critiques->contains($critique)) {
+            $this->critiques->add($critique);
+            $critique->setLivre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritique(Critique $critique): static
+    {
+        if ($this->critiques->removeElement($critique)) {
+            // set the owning side to null (unless already changed)
+            if ($critique->getLivre() === $this) {
+                $critique->setLivre(null);
             }
         }
 

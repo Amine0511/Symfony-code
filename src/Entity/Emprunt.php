@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\EmpruntRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Utilisateur;  // <-- Ajoute cette ligne pour importer la classe Utilisateur
 
 #[ORM\Entity(repositoryClass: EmpruntRepository::class)]
 class Emprunt
@@ -27,30 +26,30 @@ class Emprunt
 
     #[ORM\ManyToOne(inversedBy: 'emprunts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;  // <-- Utilisateur est maintenant reconnu
+    private ?Utilisateur $utilisateur = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDateEmprunt(): ?\DateTimeInterface
+    public function getDate_emprunt(): ?\DateTimeInterface
     {
         return $this->date_emprunt;
     }
 
-    public function setDateEmprunt(\DateTimeInterface $date_emprunt): static
+    public function setDate_emprunt(\DateTimeInterface $date_emprunt): static
     {
         $this->date_emprunt = $date_emprunt;
         return $this;
     }
 
-    public function getDateRetour(): ?\DateTimeInterface
+    public function getDate_retour(): ?\DateTimeInterface
     {
         return $this->date_retour;
     }
 
-    public function setDateRetour(?\DateTimeInterface $date_retour): static
+    public function setDate_retour(?\DateTimeInterface $date_retour): static
     {
         $this->date_retour = $date_retour;
         return $this;

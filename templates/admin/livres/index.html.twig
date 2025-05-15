@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des livres{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Gestion des livres</h1>
+        <a href="{{ path('app_admin_livre_new') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>
+            Nouveau livre
+        </a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titre</th>
+                            <th>ISBN</th>
+                            <th>Auteur</th>
+                            <th>Genre</th>
+                            <th>Disponible</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for livre in livres %}
+                            <tr>
+                                <td>{{ livre.id }}</td>
+                                <td>{{ livre.titre }}</td>
+                                <td>{{ livre.isbn }}</td>
+                                <td>{{ livre.auteur.nom }}</td>
+                                <td>{{ livre.genre.nom }}</td>
+                                <td>
+                                    {% if livre.disponible %}
+                                        <span class="badge bg-success">Oui</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Non</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ path('app_livre_show', {id: livre.id}) }}" class="btn btn-sm btn-outline-info" title="Voir les détails">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_admin_livre_edit', {id: livre.id}) }}" class="btn btn-sm btn-outline-primary" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        {% if not livre.disponible %}
+                                            <form action="{{ path('app_admin_emprunt_return', {id: livre.id}) }}" method="post" class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('return' ~ livre.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Retourner le livre"
+                                                        onclick="return confirm('Confirmer le retour du livre ?')">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        <form action="{{ path('app_admin_livre_delete', {id: livre.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce livre ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Aucun livre trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

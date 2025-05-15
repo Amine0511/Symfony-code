@@ -5,9 +5,11 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,9 +28,20 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Emprunt::class)]
     private Collection $emprunts;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Critique::class, orphanRemoval: true)]
+    private Collection $critiques;
+
+    #[ORM\Column]
+    private ?string $password = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
     public function __construct()
     {
         $this->emprunts = new ArrayCollection();
+        $this->critiques = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
     }
 
     public function getId(): ?int
@@ -69,6 +82,46 @@ class Utilisateur
         return $this;
     }
 
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // Garantir que chaque utilisateur a au moins ROLE_USER
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->getRoles());
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
     public function getEmprunts(): Collection
     {
         return $this->emprunts;
@@ -77,7 +130,7 @@ class Utilisateur
     public function getEmpruntsActifs(): Collection
     {
         return $this->emprunts->filter(function(Emprunt $emprunt) {
-            return $emprunt->getDateRetour() === null;
+            return $emprunt->getDate_retour() === null;
         });
     }
 
@@ -105,5 +158,61 @@ class Utilisateur
             }
         }
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Critique>
+     */
+    public function getCritiques(): Collection
+    {
+        return $this->critiques;
+    }
+
+    public function addCritique(Critique $critique): static
+    {
+        if (!$this->critiques->contains($critique)) {
+            $this->critiques->add($critique);
+            $critique->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritique(Critique $critique): static
+    {
+        if ($this->critiques->removeElement($critique)) {
+            // set the owning side to null (unless already changed)
+            if ($critique->getUtilisateur() === $this) {
+                $critique->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasEmpruntEnRetard(): bool
+    {
+        foreach ($this->getEmpruntsActifs() as $emprunt) {
+            $dateRetourPrevue = $emprunt->getDate_emprunt()->modify('+14 days');
+            if ($dateRetourPrevue < new \DateTime()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasAlreadyBorrowed(Livre $livre): bool
+    {
+        foreach ($this->getEmpruntsActifs() as $emprunt) {
+            if ($emprunt->getLivre()->getId() === $livre->getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function canBorrow(): bool
+    {
+        return $this->getEmpruntsActifs()->count() < 3 && !$this->hasEmpruntEnRetard();
     }
 }

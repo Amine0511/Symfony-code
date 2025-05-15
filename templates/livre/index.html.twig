@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue des livres{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row">
+        {# Filtres #}
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">Filtres</h2>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="{{ path('app_livre_index') }}" class="filters-form">
+                        <div class="mb-3">
+                            <label for="search" class="form-label">Recherche</label>
+                            <input type="text" class="form-control" id="search" name="q" 
+                                   value="{{ currentQuery }}" placeholder="Titre ou ISBN...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="genre" class="form-label">Genre</label>
+                            <select class="form-select" id="genre" name="genre">
+                                <option value="">Tous les genres</option>
+                                {% for genre in genres %}
+                                    <option value="{{ genre.nom }}" {% if currentGenre == genre.nom %}selected{% endif %}>
+                                        {{ genre.nom }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="auteur" class="form-label">Auteur</label>
+                            <select class="form-select" id="auteur" name="auteur">
+                                <option value="">Tous les auteurs</option>
+                                {% for auteur in auteurs %}
+                                    <option value="{{ auteur.nom }}" {% if currentAuteur == auteur.nom %}selected{% endif %}>
+                                        {{ auteur.nom }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Filtrer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {# Liste des livres #}
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Catalogue des livres</h1>
+                <span class="text-muted">{{ totalLivres }} livre(s) trouvé(s)</span>
+            </div>
+
+            {% if livres is empty %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Aucun livre ne correspond à vos critères de recherche.
+                </div>
+            {% else %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    {% for livre in livres %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ livre.titre }}</h5>
+                                    <p class="card-text text-muted mb-2">
+                                        <i class="fas fa-user me-2"></i>{{ livre.auteur.nom }}
+                                    </p>
+                                    <p class="card-text text-muted mb-2">
+                                        <i class="fas fa-tag me-2"></i>{{ livre.genre.nom }}
+                                    </p>
+                                    {% if livre.description %}
+                                        <p class="card-text small text-muted mb-3">
+                                            {{ livre.description|slice(0, 100) }}...
+                                        </p>
+                                    {% endif %}
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        {% if livre.disponible %}
+                                            <span class="badge bg-success">Disponible</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Non disponible</span>
+                                        {% endif %}
+                                        <a href="{{ path('app_livre_show', {'id': livre.id}) }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-info-circle me-1"></i>Détails
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {# Pagination #}
+                {% if totalPages > 1 %}
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                                <a class="page-link" href="{{ path('app_livre_index', {
+                                    page: currentPage - 1,
+                                    q: currentQuery,
+                                    genre: currentGenre,
+                                    auteur: currentAuteur
+                                }) }}">Précédent</a>
+                            </li>
+                            
+                            {% for i in 1..totalPages %}
+                                <li class="page-item {% if currentPage == i %}active{% endif %}">
+                                    <a class="page-link" href="{{ path('app_livre_index', {
+                                        page: i,
+                                        q: currentQuery,
+                                        genre: currentGenre,
+                                        auteur: currentAuteur
+                                    }) }}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+                            
+                            <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                                <a class="page-link" href="{{ path('app_livre_index', {
+                                    page: currentPage + 1,
+                                    q: currentQuery,
+                                    genre: currentGenre,
+                                    auteur: currentAuteur
+                                }) }}">Suivant</a>
+                            </li>
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .card {
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .filters-form {
+            position: sticky;
+            top: 1rem;
+        }
+    </style>
+{% endblock %}
+{% endblock %} 

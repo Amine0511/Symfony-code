@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - Administration{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Tableau de bord administrateur</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-book me-2"></i>
+                        Gestion des livres
+                    </h5>
+                    <p class="card-text">Gérez le catalogue des livres de la bibliothèque.</p>
+                    <a href="{{ path('app_admin_livres') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>
+                        Voir les livres
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-users me-2"></i>
+                        Gestion des auteurs
+                    </h5>
+                    <p class="card-text">Gérez les auteurs de la bibliothèque.</p>
+                    <a href="{{ path('app_admin_auteurs') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>
+                        Voir les auteurs
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-tags me-2"></i>
+                        Gestion des genres
+                    </h5>
+                    <p class="card-text">Gérez les genres littéraires.</p>
+                    <a href="{{ path('app_admin_genres') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>
+                        Voir les genres
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

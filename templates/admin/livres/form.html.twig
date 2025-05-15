@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ livre.id ? 'Modifier' : 'Nouveau' }} livre{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h3 mb-0">{{ livre.id ? 'Modifier' : 'Nouveau' }} livre</h1>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.titre) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.isbn, 'ISBN', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.isbn, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.isbn) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.auteur, 'Auteur', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.auteur, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.auteur) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.genre, 'Genre', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.genre, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.genre) }}
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            {{ form_widget(form.disponible, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(form.disponible, 'Disponible', {'label_attr': {'class': 'form-check-label'}}) }}
+                            {{ form_errors(form.disponible) }}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('app_admin_livres') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Retour à la liste
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                {{ livre.id ? 'Mettre à jour' : 'Créer' }}
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
